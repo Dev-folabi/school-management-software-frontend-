@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Link} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import signUpAuth from "../../api/auth/signupAuth";
@@ -13,7 +13,8 @@ const SignUpForm = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registering, setRegistering] = useState(false);
   const [errors, setErrors] = useState({});
-const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const navigate = useNavigate()
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -63,19 +64,24 @@ const [feedback, setFeedback] = useState(null);
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-console.log(data);
-        setFeedback({type: 'success', message: 'Registration successful!'})
-        
+
+        setFeedback({ type: "success", message: "Registration successful!" });
+        console.log(data);
+        localStorage.setItem("token", data);
+       
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
       } else {
         console.log(data);
-        setFeedback({ type: "error", message: `Registration failed: ${data}` }); 
+        setFeedback({ type: "error", message: `Registration failed: ${data}` });
       }
     } catch (error) {
       console.log(error.message);
-       setFeedback({
-         type: "error",
-         message: "Registration error. Please try again.",
-       });
+      setFeedback({
+        type: "error",
+        message: "Registration error. Please try again.",
+      });
     } finally {
       setRegistering(false);
     }
@@ -83,16 +89,12 @@ console.log(data);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-
-      {/*  alert  */}
+      {/* Alert */}
       {feedback && (
-          <CustomAlert
-            severity={feedback.type}
-            onClose={() => setFeedback(null)}
-          >
-            {feedback.message}
-          </CustomAlert>
-        )}
+        <CustomAlert severity={feedback.type} onClose={() => setFeedback(null)}>
+          {feedback.message}
+        </CustomAlert>
+      )}
 
       <div className="mb-8">
         <h2 className="text-4xl font-bold text-black-400 text-center pb-2">
@@ -103,7 +105,7 @@ console.log(data);
         </h3>
       </div>
 
-      <form className="flex flex-col space-y-4" onSubmit={handleRegister}>
+      <form className="flex flex-col space-y-4 mb-6" onSubmit={handleRegister}>
         <div className="flex space-x-4">
           <TextField
             required
@@ -163,12 +165,20 @@ console.log(data);
           autoComplete="new-password"
           variant="outlined"
         />
-        <Button type="submit" variant="contained" disabled={registering}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={registering}
+          className="bg-t-blue"
+        >
           {registering ? "REGISTERING..." : "SIGN UP"}
         </Button>
       </form>
-      <Link to='/login'>Login</Link>
-      
+
+      {/* Link to Sign In */}
+      <Link to="/login" className="text-black-400">
+        Have an account? <span className="text-t-blue">Sign In</span>
+      </Link>
     </div>
   );
 };

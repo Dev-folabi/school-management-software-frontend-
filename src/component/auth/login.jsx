@@ -1,16 +1,22 @@
 import * as React from "react";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import loginAuth from "../../api/auth/loginAuth";
 import CustomAlert from "../toast/alert";
 
+
+
+
 const LoginForm = () => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
   const [errors, setErrors] = useState({});
   const [feedback, setFeedback] = useState(null);
+  const navigate = useNavigate()
 
 
   const handleLogin = async (e) => {
@@ -40,15 +46,21 @@ const LoginForm = () => {
        if(success){
         console.log(data)
         setFeedback({type: 'success', message: "Logged In"})
+        localStorage.setItem('token', data)
+
+        setTimeout(()=>{
+          navigate("/dashboard");
+        }, 1000)
+        
        }else{
         console.log(data, error)
-        setFeedback({ type: "error", message: `Login failed ${data}` });
+        setFeedback({ type: "error", message: `Faild!! ${data}` });
        }
       } catch (error) {
-        console.error("Login failed:", error.message);
+        console.error("Faild!!", error.message);
          setFeedback({
            type: "error",
-           message: "Login failed. Please try again.",
+           message: "Faild!!  Please try again.",
          });
       } finally {
         setLogin(false);
@@ -61,11 +73,12 @@ const LoginForm = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-
-{/*  alert  */}
-{feedback && (<CustomAlert severity={feedback.type} onClose={()=>(setFeedback(null))}>
-  {feedback.message}
-  </CustomAlert>)}
+      {/*  alert  */}
+      {feedback && (
+        <CustomAlert severity={feedback.type} onClose={() => setFeedback(null)}>
+          {feedback.message}
+        </CustomAlert>
+      )}
 
       <div className="mb-8">
         <h2 className="text-4xl font-bold text-black-400 text-center pb-2">
@@ -76,7 +89,7 @@ const LoginForm = () => {
         </h3>
       </div>
 
-      <form className="flex flex-col space-y-4 w-96" onSubmit={handleLogin}>
+      <form className="flex flex-col space-y-4 w-96 mb-6" onSubmit={handleLogin}>
         <TextField
           required
           id="outlined-email"
@@ -103,10 +116,13 @@ const LoginForm = () => {
           variant="outlined"
         />
 
-        <Button type="submit" variant="contained">
+        <Button type="submit" variant="contained" disabled= {login} className="bg-t-blue">
           {login ? "LOGIN IN ..." : "LOGIN"}
         </Button>
       </form>
+      <Link to="/signup">
+        Don't have an account? <span className="text-t-blue">Sign Up</span>
+      </Link>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link} from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
@@ -11,10 +12,8 @@ const Code = () => {
     e.preventDefault();
 
     setErrors("");
-    if (!code.trim() || code.trim().length < 6) {
+    if (!code.trim() || code.trim().length !== 6) {
       setErrors("Please input a valid 6-digit code.");
-    } else if (code.trim().length > 6) {
-      setErrors("Game code cannot be more than 6 digits.");
     } else {
       console.log(code);
       setJoin(true);
@@ -25,8 +24,7 @@ const Code = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen p-8">
-      {/* Centered Container */}
+    <div className="flex items-center justify-center ">
       <div className="w-full max-w-md">
         <div className="mt-16 mb-8">
           <h2 className="text-4xl font-bold text-black text-center pb-2">
@@ -38,7 +36,7 @@ const Code = () => {
         </div>
 
         <form
-          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          className=" flex flex-col  bg-white shadow-md rounded px-8 pt-6 pb-8"
           onSubmit={handleSubmit}
         >
           <div className="mb-4">
@@ -53,16 +51,23 @@ const Code = () => {
               variant="outlined"
               fullWidth
             />
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={join}
-              className="w-full mt-4"
-            >
-              {join ? "Joining..." : "Join"}
-            </Button>
           </div>
+
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={join}
+            fullWidth
+            className="mt-4 mb-8 bg-t-blue"
+          >
+            {join ? "Joining..." : "Join"}
+          </Button>
+
+           <Link to="/signup" className="text-center text-t-blue mt-8">
+        Become an admin
+      </Link>
         </form>
+       
       </div>
     </div>
   );
